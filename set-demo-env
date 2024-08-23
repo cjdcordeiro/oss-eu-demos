@@ -1,0 +1,41 @@
+#!/bin/bash
+
+export PS1='\[\e[0;36m\]oss-eu 🔥 \[\e[0;33m\]\t \[\e[0;37m\]$(basename $(dirname "$PWD"))/\[\e[1;38;5;208m\]$(basename "$PWD")\[\e[0;36m\] \$ \[\e[0m\]'
+export OSS_DIR="$(realpath "$(dirname "${BASH_SOURCE[0]}")")"
+
+cis-audit() {
+    image=$1
+    container_name=$(uuidgen)
+    docker create --name $container_name --entrypoint null $image
+    docker run --privileged --rm -v /var/run/docker.sock:/var/run/docker.sock \
+        -v $PWD/report:/report \
+        -v $OSS_DIR/tailoring:/tailoring \
+        ubuntu-pro/auditor-cis-stig \
+        oscap-docker container $container_name xccdf eval \
+        --verbose ERROR --profile cis_level2_server_demo \
+        --results /report/result_cis_level2_server_$image.xml \
+        --report /report/report_cis_level2_server_$image.html \
+        --tailoring-file /tailoring/cis_level2_server.xml \
+        /scap-security-guide-latest/ssg-ubuntu2204-ds.xml
+
+    docker rm $container_name
+}
+
+stig-audit() {
+    image=$1
+    container_name=$(uuidgen)
+    docker create --name $container_name --entrypoint null $image
+    docker run --privileged --rm -v /var/run/docker.sock:/var/run/docker.sock \
+        -v $PWD/report:/report \
+        -v $OSS_DIR/tailoring:/tailoring \
+        ubuntu-pro/auditor-cis-stig \
+        oscap-docker container $container_name xccdf eval \
+        --verbose ERROR --profile stig_demo \
+        --stig-viewer /report/report_stigviewer_$image.xml \
+        --results /report/result_stig_$image.xml \
+        --report /report/report_stig_$image.html \
+        --tailoring-file /tailoring/stig.xml \
+        /scap-security-guide-latest/ssg-ubuntu2204-ds.xml
+
+    docker rm $container_name
+}

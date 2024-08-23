@@ -1,0 +1,29 @@
+name: valkey-client
+base: bare
+build-base: ubuntu@22.04 # the base environment for this rock
+version: "7.2.5"
+summary: Python client for Valkey 7.2.5
+description: |
+    This is a chiselled Python rock that runs a Valkey client
+    that can operate in both consumer and publisher mode.
+platforms:
+    amd64:
+
+run-user: _daemon_
+
+services:
+    valkey_client:
+        override: replace
+        command: valkey_client [ ]
+        startup: enabled
+        on-failure: shutdown
+        on-success: shutdown
+
+parts:
+    python-client:
+        plugin: python
+        source: .
+        python-requirements:
+            - requirements.txt
+        stage-packages:
+            - python3.10_standard

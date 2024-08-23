@@ -1,0 +1,18 @@
+name: chiselled-python
+base: bare
+build-base: ubuntu@22.04
+version: "3.11"
+summary: Chiselled Python3.11 rock
+description: Example of a chiselled Python rock
+license: Python-2.0
+platforms:
+    amd64:
+
+run-user: _daemon_
+
+parts:
+    install-python-slices:
+        plugin: nil
+        stage-packages:
+          - base-files_release-info
+          - python3.11_core

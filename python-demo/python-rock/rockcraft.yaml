@@ -1,0 +1,18 @@
+name: python
+base: ubuntu@22.04
+version: "3.11"
+summary: Python3.11 rock
+description: Example of a Python rock
+license: Python-2.0
+platforms:
+    amd64:
+
+run-user: _daemon_
+
+parts:
+    install-python:
+        plugin: nil
+        stage-packages:
+          - base-files
+          - python3.11
+

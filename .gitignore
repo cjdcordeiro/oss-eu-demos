@@ -1,0 +1,8 @@
+*.rock
+.vscode
+tailoring
+reports
+*.cache
+flask-demo/flask-hello-world/*
+!flask-demo/flask-hello-world/.gitkeep
+*.tar
